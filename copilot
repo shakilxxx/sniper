@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TANVIR BOT - NFT Sniper</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d0d0d;
+      color: #e0e0e0;
+    }
+    header {
+      background: linear-gradient(90deg, #0f0f0f, #1a1a1a);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid #00ffcc;
+    }
+    header h1 {
+      color: #00ffcc;
+      margin: 0;
+      font-size: 28px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    .card {
+      background-color: #1a1a1a;
+      border: 1px solid #00ffcc;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .card h2 {
+      color: #00ffcc;
+      margin-bottom: 15px;
+      font-size: 22px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #ff66cc;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      background-color: #0d0d0d;
+      border: 1px solid #00ffcc;
+      border-radius: 5px;
+      color: #e0e0e0;
+    }
+    .warning {
+      color: #ff3333;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .metrics {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .metrics div {
+      background-color: #0d0d0d;
+      padding: 10px;
+      border: 1px solid #333;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #00ffcc;
+      color: #0d0d0d;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #ff66cc;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>TANVIR BOT — NFT Sniper (All EVM Chains v5.0)</h1>
+  </header>
+
+  <div class="container">
+    <!-- STEP 1 -->
+    <div class="card">
+      <h2>STEP 1 — CHAIN & WALLET</h2>
+      <label>Select Blockchain Network</label>
+      <select>
+        <option>ETH</option>
+        <option>BSC</option>
+        <option>POLYGON</option>
+        <option>AVAX</option>
+        <option>FTM</option>
+        <option>BASE</option>
+        <option>ARBITRUM</option>
+        <option>OPTIMISM</option>
+        <option>ZKSYNC</option>
+        <option>LINEA</option>
+        <option>SCROLL</option>
+        <option>APECHAIN</option>
+        <option>POLYGON-ZK</option>
+        <option>CELO</option>
+        <option>MOONBEAM</option>
+        <option>MANTA</option>
+      </select>
+
+      <label>RPC URL</label>
+      <input type="text" placeholder="https://...">
+
+      <label>Private Key</label>
+      <input type="password" placeholder="Enter private key">
+
+      <div class="warning">⚠ Use dedicated hot wallet only. Never your main wallet.</div>
+
+      <div class="metrics">
+        <div>Wallet: 0xFa7F72B3f9e1d51C903fB4C7d42fd1C433BBA2A7</div>
+        <div>Balance: 0.0000</div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="card">
+      <h2>STEP 2 — CONTRACT</h2>
+      <label>Contract Address</label>
+      <input type="text" value="0x99bba4ddf1e5cd4dcadcd3b162e1ea2ba98908ec">
+
+      <label>Mint Function Name</label>
+      <input type="text" value="mint">
+
+      <label>ABI Fragment</label>
+      <textarea rows="5">[{"inputs":[{"internalType":"address","name":"minter","type":"address"},{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"}]</textarea>
+
+      <div class="metrics">
+        <div>Mint Price (ETH): 0</div>
+        <div>Quantity per Tx: 1</div>
+        <div>Supply: 12</div>
+      </div>
+
+      <div class="metrics">
+        <div>Status: Contract deployed</div>
+        <div>totalSupply(): N/A</div>
+        <div>maxSupply(): N/A</div>
+      </div>
+
+      <button>Mint NFT</button>
+    </div>
+
+    <!-- METRICS -->
+    <div class="card">
+      <h2>Metrics</h2>
+      <div class="metrics">
+        <div>Minted: 0</div>
+        <div>Failed: 3</div>
+        <div>Gas Price: 0.0 Gwei</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
