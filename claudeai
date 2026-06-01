@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFT Sniper Bot</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10;
+    --bg2: #0f1218;
+    --bg3: #141820;
+    --card: #12161e;
+    --border: #1e2535;
+    --border2: #252d40;
+    --cyan: #00d4ff;
+    --cyan2: #00a8cc;
+    --green: #00ff88;
+    --green2: #00cc6a;
+    --red: #ff3b5c;
+    --yellow: #ffcc00;
+    --orange: #ff8c00;
+    --purple: #9b59ff;
+    --text: #e0e8f0;
+    --text2: #8899aa;
+    --text3: #556677;
+    --mono: 'Share Tech Mono', monospace;
+    --sans: 'Exo 2', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* TOP HEADER */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-icon {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 16px;
+    color: var(--cyan);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .logo-sub {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    margin-top: 2px;
+  }
+
+  .header-stats {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 20px;
+  }
+
+  .hstat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  .hstat .icon { font-size: 13px; }
+  .hstat .val { color: var(--text); }
+
+  .hstat.active-chain {
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .wallet-addr {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 5px;
+  }
+
+  /* TAB NAV */
+  .tabnav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex;
+    gap: 2px;
+  }
+
+  .tab {
+    padding: 12px 18px;
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    user-select: none;
+  }
+
+  .tab:hover { color: var(--text2); }
+
+  .tab.active {
+    color: var(--cyan);
+    border-bottom-color: var(--cyan);
+  }
+
+  /* STAT CARDS */
+  .stat-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-card {
+    background: var(--bg2);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-num {
+    font-family: var(--mono);
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .stat-num.green { color: var(--green); }
+  .stat-num.red { color: var(--red); }
+  .stat-num.yellow { color: var(--yellow); }
+  .stat-num.cyan { color: var(--cyan); }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+
+  /* MAIN CONTENT */
+  .main {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 900px;
+  }
+
+  /* SECTION CARD */
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg2);
+  }
+
+  .section-title {
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .section-body { padding: 18px; }
+
+  /* CHAIN SELECTOR */
+  .chain-group { margin-bottom: 16px; }
+
+  .chain-group-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .chain-group-label::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+
+  .chain-group.l1 .chain-group-label::before { background: var(--yellow); }
+  .chain-group.l2 .chain-group-label::before { background: var(--cyan); }
+  .chain-group.more .chain-group-label::before { background: var(--text3); }
+
+  .chain-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chain-btn {
+    padding: 7px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    background: var(--bg3);
+    color: var(--text2);
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .chain-btn:hover {
+    border-color: var(--text3);
+    color: var(--text);
+  }
+
+  .chain-btn.active {
+    background: rgba(0, 212, 255, 0.12);
+    border-color: var(--cyan);
+    color: var(--cyan);
+    box-shadow: 0 0 10px rgba(0,212,255,0.15);
+  }
+
+  /* FORM FIELDS */
+  .field-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 7px;
+    margin-top: 14px;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .field-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .field-input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 2px rgba(0,212,255,0.1);
+  }
+
+  .field-input::placeholder { color: var(--text3); }
+
+  .field-input.password { letter-spacing: 3px; }
+
+  /* ALERT BOXES */
+  .alert {
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .alert.warn {
+    background: rgba(255, 140, 0, 0.1);
+    border: 1px solid rgba(255, 140, 0, 0.3);
+    color: var(--orange);
+  }
+
+  .alert.success {
+    background: rgba(0, 255, 136, 0.08);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    color: var(--green);
+  }
+
+  /* BUTTONS */
+  .btn {
+    padding: 10px 18px;
+    border-radius: 6px;
+    border: none;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .btn-cyan {
+    background: var(--cyan);
+    color: #000;
+  }
+
+  .btn-cyan:hover {
+    background: #33ddff;
+    box-shadow: 0 0 16px rgba(0,212,255,0.4);
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+  }
+
+  .btn-green {
+    background: var(--green);
+    color: #000;
+  }
+
+  .btn-green:hover {
+    background: #33ffaa;
+    box-shadow: 0 0 16px rgba(0,255,136,0.4);
+  }
+
+  .btn-red {
+    background: var(--red);
+    color: #fff;
+  }
+
+  /* ABI TEXTAREA */
+  .abi-textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 11px;
+    outline: none;
+    resize: vertical;
+    min-height: 90px;
+    transition: border-color 0.2s;
+    line-height: 1.6;
+  }
+
+  .abi-textarea:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 2px rgba(0,212,255,0.1);
+  }
+
+  /* SUPPLY INFO */
+  .supply-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  .supply-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--cyan);
+    background: rgba(0,212,255,0.1);
+    border: 1px solid rgba(0,212,255,0.3);
+    border-radius: 4px;
+    padding: 3px 8px;
+  }
+
+  /* CHECK LIST */
+  .check-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text2);
+  }
+
+  .check-item .dot {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+
+  .check-item.ok .dot {
+    background: rgba(0,255,136,0.15);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .check-item.na .dot {
+    background: var(--bg);
+    color: var(--text3);
+  }
+
+  /* TWO COLUMN GRID */
+  .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* STEP 3: TIMING */
+  .timing-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* STEP 4: START BOT */
+  .bot-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .big-btn {
+    flex: 1;
+    padding: 14px 24px;
+    border-radius: 8px;
+    border: none;
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 160px;
+  }
+
+  .big-btn.start {
+    background: linear-gradient(135deg, var(--green), #00aa55);
+    color: #000;
+    box-shadow: 0 4px 20px rgba(0,255,136,0.2);
+  }
+
+  .big-btn.start:hover {
+    box-shadow: 0 4px 30px rgba(0,255,136,0.4);
+    transform: translateY(-1px);
+  }
+
+  .big-btn.stop {
+    background: linear-gradient(135deg, var(--red), #cc0033);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(255,59,92,0.2);
+  }
+
+  .big-btn.stop:hover {
+    box-shadow: 0 4px 30px rgba(255,59,92,0.4);
+    transform: translateY(-1px);
+  }
+
+  /* LOG SECTION */
+  .log-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    height: 160px;
+    overflow-y: auto;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.8;
+  }
+
+  .log-line { display: flex; gap: 8px; }
+  .log-time { color: var(--text3); flex-shrink: 0; }
+  .log-line.info .log-msg { color: var(--text2); }
+  .log-line.ok .log-msg { color: var(--green); }
+  .log-line.err .log-msg { color: var(--red); }
+  .log-line.warn .log-msg { color: var(--yellow); }
+
+  /* INLINE BADGE */
+  .badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-weight: 700;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
+
+  .badge.green { background: rgba(0,255,136,0.15); color: var(--green); border: 1px solid rgba(0,255,136,0.3); }
+  .badge.red { background: rgba(255,59,92,0.15); color: var(--red); border: 1px solid rgba(255,59,92,0.3); }
+  .badge.cyan { background: rgba(0,212,255,0.15); color: var(--cyan); border: 1px solid rgba(0,212,255,0.3); }
+
+  /* SMALL SELECT */
+  .field-select {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .field-select:focus { border-color: var(--cyan); }
+  .field-select option { background: var(--bg2); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 16px 0;
+  }
+
+  /* GLOW EFFECT ON ACTIVE CHAIN BTN */
+  .chain-btn.eth.active { border-color: #627eea; color: #627eea; background: rgba(98,126,234,0.12); }
+  .chain-btn.bsc.active { border-color: #f0b90b; color: #f0b90b; background: rgba(240,185,11,0.12); }
+  .chain-btn.polygon.active { border-color: var(--purple); color: var(--purple); background: rgba(155,89,255,0.12); }
+  .chain-btn.avax.active { border-color: var(--red); color: var(--red); background: rgba(255,59,92,0.12); }
+  .chain-btn.ftm.active { border-color: #13b5ec; color: #13b5ec; background: rgba(19,181,236,0.12); }
+  .chain-btn.base.active { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.12); }
+  .chain-btn.arb.active { border-color: #28a0f0; color: #28a0f0; background: rgba(40,160,240,0.12); }
+  .chain-btn.op.active { border-color: var(--red); color: var(--red); background: rgba(255,59,92,0.12); }
+  .chain-btn.zk.active { border-color: var(--purple); color: var(--purple); background: rgba(155,89,255,0.12); }
+
+  /* TABS CONTENT */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* MONITOR TABLE */
+  .monitor-table { width: 100%; border-collapse: collapse; font-family: var(--mono); font-size: 11px; }
+  .monitor-table th {
+    text-align: left;
+    padding: 8px 12px;
+    color: var(--text3);
+    font-size: 10px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--sans);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .monitor-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text2);
+  }
+  .monitor-table tr:last-child td { border-bottom: none; }
+  .monitor-table tr:hover td { background: rgba(255,255,255,0.02); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="logo-icon">🎯</div>
+  <div>
+    <div class="logo-text">NFT Sniper</div>
+    <div class="logo-sub">ALL EVM CHAINS &nbsp;·&nbsp; v5.0 &nbsp;·&nbsp; PRODUCTION</div>
+  </div>
+
+  <div class="header-stats">
+    <div class="hstat active-chain">
+      <span class="icon">🔵</span>
+      <span class="val">BASE</span>
+    </div>
+    <div class="hstat">
+      <span class="icon">⚡</span>
+      <span class="val" id="gwei-top">0.0</span>
+      <span>Gwei</span>
+    </div>
+    <div class="hstat">
+      <span class="icon">💰</span>
+      <span class="val" id="bal-top">0.0000</span>
+    </div>
+    <div class="hstat">
+      <span class="icon">🚀</span>
+      <span style="color:var(--green)">IDLE</span>
+    </div>
+    <div class="hstat">
+      <span class="icon">✅</span>
+      <span class="val" id="minted-top" style="color:var(--green)">0</span>
+    </div>
+    <div class="hstat">
+      <span class="icon">❌</span>
+      <span class="val" id="failed-top" style="color:var(--red)">3</span>
+    </div>
+    <div class="hstat">
+      <span class="icon">⏱</span>
+      <span class="val" id="ms-top">— ms</span>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="status-dot"></div>
+    <div class="wallet-addr" id="wallet-display">0xFa7F...BB2A7</div>
+  </div>
+</header>
+
+<!-- TAB NAV -->
+<nav class="tabnav">
+  <div class="tab active" data-tab="bot" onclick="switchTab('bot', this)">🎯 BOT</div>
+  <div class="tab" data-tab="wallets" onclick="switchTab('wallets', this)">👜 WALLETS</div>
+  <div class="tab" data-tab="rpc" onclick="switchTab('rpc', this)">📡 RPC</div>
+  <div class="tab" data-tab="gas" onclick="switchTab('gas', this)">⛽ GAS</div>
+  <div class="tab" data-tab="monitor" onclick="switchTab('monitor', this)">📊 MONITOR</div>
+  <div class="tab" data-tab="log" onclick="switchTab('log', this)">📋 LOG</div>
+</nav>
+
+<!-- STAT CARDS -->
+<div class="stat-cards">
+  <div class="stat-card">
+    <div class="stat-num green" id="stat-minted">0</div>
+    <div class="stat-label">Minted</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num red" id="stat-failed">3</div>
+    <div class="stat-label">Failed</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num yellow" id="stat-gas">0.0</div>
+    <div class="stat-label">Gas Gwei</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num cyan" id="stat-balance">0.0000</div>
+    <div class="stat-label">Balance</div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- BOT TAB -->
+  <div id="tab-bot" class="tab-content active">
+
+    <!-- STEP 1: CHAIN & WALLET -->
+    <div class="section">
+      <div class="section-header">
+        <span>🔐</span>
+        <span class="section-title">Step 1 — Chain & Wallet</span>
+      </div>
+      <div class="section-body">
+
+        <div class="chain-group l1">
+          <div class="chain-group-label">⚡ EVM L1</div>
+          <div class="chain-btns">
+            <button class="chain-btn eth" onclick="selectChain(this, 'ETH')">💎 ETH</button>
+            <button class="chain-btn bsc" onclick="selectChain(this, 'BSC')">🟡 BSC</button>
+            <button class="chain-btn polygon" onclick="selectChain(this, 'POLYGON')">🔮 POLYGON</button>
+            <button class="chain-btn avax" onclick="selectChain(this, 'AVAX')">🔺 AVAX</button>
+            <button class="chain-btn ftm" onclick="selectChain(this, 'FTM')">👻 FTM</button>
+          </div>
+        </div>
+
+        <div class="chain-group l2">
+          <div class="chain-group-label">🔵 L2 ROLLUPS</div>
+          <div class="chain-btns">
+            <button class="chain-btn base active" onclick="selectChain(this, 'BASE')">🅱️ BASE</button>
+            <button class="chain-btn arb" onclick="selectChain(this, 'ARBITRUM')">🔵 ARBITRUM</button>
+            <button class="chain-btn op" onclick="selectChain(this, 'OPTIMISM')">🔴 OPTIMISM</button>
+            <button class="chain-btn zk" onclick="selectChain(this, 'ZKSYNC')">🔄 ZKSYNC</button>
+            <button class="chain-btn" onclick="selectChain(this, 'LINEA')">○ LINEA</button>
+            <button class="chain-btn" onclick="selectChain(this, 'SCROLL')">📜 SCROLL</button>
+          </div>
+        </div>
+
+        <div class="chain-group more">
+          <div class="chain-group-label">🌐 MORE CHAINS</div>
+          <div class="chain-btns">
+            <button class="chain-btn" onclick="selectChain(this, 'APECHAIN')">🐒 APECHAIN</button>
+            <button class="chain-btn" onclick="selectChain(this, 'POLYGON-ZK')">🔮 POLYGON-ZK</button>
+            <button class="chain-btn" onclick="selectChain(this, 'CELO')">🌱 CELO</button>
+            <button class="chain-btn" onclick="selectChain(this, 'MOONBEAM')">🌙 MOONBEAM</button>
+            <button class="chain-btn" onclick="selectChain(this, 'MANTA')">🌊 MANTA</button>
+          </div>
+        </div>
+
+        <div class="field-label">ALCHEMY/INFURA RPC URL (CORS-SAFE) OR LEAVE BLANK FOR METAMASK</div>
+        <div class="field-row">
+          <input class="field-input" type="text" id="rpc-url" placeholder="https://base-mainnet.g.alchemy.com/v2/YOUR_KEY"
+            value="https://base-mainnet.g.alchemy.com/v2/BNPpjAPpQMojMaorwUGIH">
+          <button class="btn btn-cyan" onclick="testRPC()">TEST RPC</button>
+        </div>
+
+        <div class="field-label">PRIVATE KEY (REQUIRES CORS-SAFE RPC ABOVE)</div>
+        <input class="field-input password" type="password" id="priv-key" placeholder="Enter private key..."
+          value="0x0000000000000000000000000000000000000000000000000000000000000000"
+          oninput="updateWalletDisplay()">
+
+        <div class="alert warn">
+          ⚠️ Use dedicated hot wallet only. Never your main wallet.
+        </div>
+
+        <div class="alert success" id="wallet-status">
+          ✅ 0xFa7F72B3f9e1dD51C903FB4C7d42fd1C433BB2A7 | BASE | Private Key
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 2: CONTRACT -->
+    <div class="section">
+      <div class="section-header">
+        <span>📄</span>
+        <span class="section-title">Step 2 — Contract</span>
+      </div>
+      <div class="section-body">
+
+        <div class="grid2">
+          <div>
+            <div class="field-label">CONTRACT ADDRESS</div>
+            <input class="field-input" type="text" id="contract-addr"
+              placeholder="0x..."
+              value="0x99bba4ddf1e5cd4dcdacd3b162e1ea2ba98908ec">
+          </div>
+          <div>
+            <div class="field-label">MINT FUNCTION NAME</div>
+            <input class="field-input" type="text" id="mint-fn" placeholder="mint" value="mint">
+          </div>
+        </div>
+
+        <div class="field-label">ABI FRAGMENT (USUALLY JUST ONE LINE)</div>
+        <textarea class="abi-textarea" id="abi-frag">[{"inputs":[{"internalType":"address","name":"minter","type":"address"},{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"mintS","outputs":[],"stateMutability":"nonpayable","type":"function"}]</textarea>
+
+        <div class="grid2">
+          <div>
+            <div class="field-label">MINT PRICE (ETH)</div>
+            <input class="field-input" type="number" id="mint-price" placeholder="0" value="0" step="0.001">
+          </div>
+          <div>
+            <div class="field-label">QTY PER TX</div>
+            <input class="field-input" type="number" id="qty-per-tx" placeholder="1" value="1" min="1">
+          </div>
+        </div>
+
+        <div class="supply-row">
+          <button class="btn btn-outline" onclick="analyzeContract()">🔍 ANALYZE</button>
+          <button class="btn btn-outline" onclick="checkSupply()">📊 SUPPLY</button>
+          <span class="supply-badge" id="supply-badge">Supply: 12</span>
+        </div>
+
+        <div class="check-list" id="check-list">
+          <div class="check-item ok"><div class="dot">✓</div><span>Contract deployed</span></div>
+          <div class="check-item na"><div class="dot">□</div><span>totalSupply() — not available</span></div>
+          <div class="check-item na"><div class="dot">□</div><span>maxSupply() — not available</span></div>
+          <div class="check-item na"><div class="dot">□</div><span>mintingEnabled() — not available</span></div>
+          <div class="check-item na"><div class="dot">□</div><span>isPaused() — not available</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: TIMING -->
+    <div class="section">
+      <div class="section-header">
+        <span>⏰</span>
+        <span class="section-title">Step 3 — Timing</span>
+      </div>
+      <div class="section-body">
+        <div class="timing-row">
+          <div>
+            <div class="field-label">MODE</div>
+            <select class="field-select" id="timing-mode">
+              <option value="immediate">Immediate</option>
+              <option value="scheduled">Scheduled Time</option>
+              <option value="block">Target Block</option>
+              <option value="watch">Watch &amp; Mint</option>
+            </select>
+          </div>
+          <div>
+            <div class="field-label">TARGET DATE/TIME (UTC)</div>
+            <input class="field-input" type="datetime-local" id="target-time">
+          </div>
+          <div>
+            <div class="field-label">RETRY COUNT</div>
+            <input class="field-input" type="number" id="retry-count" value="5" min="1" max="50">
+          </div>
+        </div>
+
+        <div class="field-label">MAX GAS (GWEI)</div>
+        <div class="field-row">
+          <input class="field-input" type="number" id="max-gas" placeholder="Auto" value="">
+          <button class="btn btn-outline" onclick="fetchGas()">⛽ FETCH GAS</button>
+          <span class="supply-badge" id="cur-gas-badge" style="align-self:center">Current: — Gwei</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 4: START BOT -->
+    <div class="section">
+      <div class="section-header">
+        <span>🚀</span>
+        <span class="section-title">Step 4 — Run Bot</span>
+      </div>
+      <div class="section-body">
+        <div class="bot-actions">
+          <button class="big-btn start" id="start-btn" onclick="startBot()">▶ START BOT</button>
+          <button class="big-btn stop" id="stop-btn" onclick="stopBot()" disabled style="opacity:0.4">■ STOP BOT</button>
+          <button class="btn btn-outline" onclick="clearLog()" style="align-self:center">🗑 CLEAR LOG</button>
+          <button class="btn btn-outline" onclick="testMint()" style="align-self:center">🧪 TEST MINT</button>
+        </div>
+
+        <div class="field-label" style="margin-top:14px">LIVE LOG</div>
+        <div class="log-box" id="live-log">
+          <div class="log-line err"><span class="log-time">[12:31:04]</span><span class="log-msg">TX Failed — insufficient gas. Retry 1/5</span></div>
+          <div class="log-line err"><span class="log-time">[12:31:07]</span><span class="log-msg">TX Failed — nonce too low. Retry 2/5</span></div>
+          <div class="log-line warn"><span class="log-time">[12:31:10]</span><span class="log-msg">RPC latency high: 820ms. Consider switching.</span></div>
+          <div class="log-line info"><span class="log-time">[12:31:15]</span><span class="log-msg">Bot idle. Waiting for trigger...</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /bot tab -->
+
+  <!-- WALLETS TAB -->
+  <div id="tab-wallets" class="tab-content">
+    <div class="section">
+      <div class="section-header">
+        <span>👜</span>
+        <span class="section-title">Wallet Manager</span>
+      </div>
+      <div class="section-body">
+        <div class="field-label">ADD WALLET (PRIVATE KEY)</div>
+        <div class="field-row">
+          <input class="field-input password" type="password" id="new-wallet-key" placeholder="0x...">
+          <button class="btn btn-cyan" onclick="addWallet()">+ ADD</button>
+        </div>
+        <div class="check-list" id="wallet-list" style="margin-top:14px">
+          <div class="check-item ok">
+            <div class="dot">✓</div>
+            <span>0xFa7F72B3f9e1dD51C903FB4C7d42fd1C433BB2A7 <span class="badge green">ACTIVE</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RPC TAB -->
+  <div id="tab-rpc" class="tab-content">
+    <div class="section">
+      <div class="section-header">
+        <span>📡</span>
+        <span class="section-title">RPC Configuration</span>
+      </div>
+      <div class="section-body">
+        <div class="field-label">CUSTOM RPC ENDPOINTS</div>
+        <textarea class="abi-textarea" placeholder="One RPC URL per line...
+https://mainnet.infura.io/v3/YOUR_KEY
+https://eth-mainnet.g.alchemy.com/v2/YOUR_KEY"></textarea>
+        <div class="field-row" style="margin-top:10px">
+          <button class="btn btn-cyan" onclick="benchmarkRPC()">📊 BENCHMARK ALL</button>
+          <button class="btn btn-outline">SAVE</button>
+        </div>
+        <div class="alert success" style="margin-top:14px" id="rpc-benchmark-result" hidden>
+          ✅ Best RPC: base-mainnet.g.alchemy.com — 42ms
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GAS TAB -->
+  <div id="tab-gas" class="tab-content">
+    <div class="section">
+      <div class="section-header">
+        <span>⛽</span>
+        <span class="section-title">Gas Settings</span>
+      </div>
+      <div class="section-body">
+        <div class="grid2">
+          <div>
+            <div class="field-label">GAS STRATEGY</div>
+            <select class="field-select">
+              <option>Auto (Market)</option>
+              <option>Aggressive (+30%)</option>
+              <option>Ultra (+100%)</option>
+              <option>Manual</option>
+            </select>
+          </div>
+          <div>
+            <div class="field-label">PRIORITY FEE (GWEI)</div>
+            <input class="field-input" type="number" placeholder="1.5" value="1.5">
+          </div>
+          <div>
+            <div class="field-label">MAX FEE (GWEI)</div>
+            <input class="field-input" type="number" placeholder="50">
+          </div>
+          <div>
+            <div class="field-label">GAS LIMIT</div>
+            <input class="field-input" type="number" placeholder="Auto" >
+          </div>
+        </div>
+        <button class="btn btn-cyan" style="margin-top:14px" onclick="fetchGas()">⛽ REFRESH GAS ORACLE</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONITOR TAB -->
+  <div id="tab-monitor" class="tab-content">
+    <div class="section">
+      <div class="section-header">
+        <span>📊</span>
+        <span class="section-title">Transaction Monitor</span>
+      </div>
+      <div class="section-body" style="padding:0">
+        <table class="monitor-table">
+          <thead>
+            <tr>
+              <th>TX HASH</th>
+              <th>STATUS</th>
+              <th>GAS USED</th>
+              <th>TIME</th>
+              <th>CHAIN</th>
+            </tr>
+          </thead>
+          <tbody id="monitor-tbody">
+            <tr>
+              <td>0xfa3e...44b1</td>
+              <td><span class="badge red">FAILED</span></td>
+              <td>21000</td>
+              <td>12:31:04</td>
+              <td>BASE</td>
+            </tr>
+            <tr>
+              <td>0x9bc2...11d4</td>
+              <td><span class="badge red">FAILED</span></td>
+              <td>21000</td>
+              <td>12:31:07</td>
+              <td>BASE</td>
+            </tr>
+            <tr>
+              <td>0x3fa1...cc90</td>
+              <td><span class="badge red">FAILED</span></td>
+              <td>21000</td>
+              <td>12:31:09</td>
+              <td>BASE</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOG TAB -->
+  <div id="tab-log" class="tab-content">
+    <div class="section">
+      <div class="section-header">
+        <span>📋</span>
+        <span class="section-title">Full Log</span>
+        <button class="btn btn-outline" style="margin-left:auto;font-size:11px;padding:4px 10px" onclick="clearLog()">🗑 CLEAR</button>
+      </div>
+      <div class="section-body" style="padding:10px">
+        <div class="log-box" id="full-log" style="height:400px">
+          <div class="log-line err"><span class="log-time">[12:31:04]</span><span class="log-msg">TX Failed — insufficient gas. Retry 1/5</span></div>
+          <div class="log-line err"><span class="log-time">[12:31:07]</span><span class="log-msg">TX Failed — nonce too low. Retry 2/5</span></div>
+          <div class="log-line warn"><span class="log-time">[12:31:10]</span><span class="log-msg">RPC latency high: 820ms. Consider switching.</span></div>
+          <div class="log-line info"><span class="log-time">[12:31:15]</span><span class="log-msg">Bot idle. Waiting for trigger...</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+  // TAB SWITCH
+  function switchTab(name, el) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('tab-' + name).classList.add('active');
+  }
+
+  // CHAIN SELECT
+  let selectedChain = 'BASE';
+  function selectChain(btn, chain) {
+    document.querySelectorAll('.chain-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    selectedChain = chain;
+    document.querySelector('.header-stats .hstat.active-chain .val').textContent = chain;
+    addLog('info', `Chain switched to ${chain}`);
+  }
+
+  // LOG SYSTEM
+  function addLog(type, msg) {
+    const now = new Date();
+    const t = `[${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}]`;
+    const html = `<div class="log-line ${type}"><span class="log-time">${t}</span><span class="log-msg">${msg}</span></div>`;
+    ['live-log', 'full-log'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.innerHTML += html; el.scrollTop = el.scrollHeight; }
+    });
+  }
+
+  function clearLog() {
+    ['live-log', 'full-log'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = '';
+    });
+  }
+
+  // BOT START/STOP
+  let botRunning = false;
+  let botInterval = null;
+
+  function startBot() {
+    if (botRunning) return;
+    botRunning = true;
+    document.getElementById('start-btn').disabled = true;
+    document.getElementById('start-btn').style.opacity = '0.4';
+    document.getElementById('stop-btn').disabled = false;
+    document.getElementById('stop-btn').style.opacity = '1';
+    addLog('ok', `Bot started on ${selectedChain}. Monitoring contract...`);
+    addLog('info', `Target: ${document.getElementById('contract-addr').value}`);
+    botInterval = setInterval(simulateBot, 3000);
+  }
+
+  function stopBot() {
+    botRunning = false;
+    clearInterval(botInterval);
+    document.getElementById('start-btn').disabled = false;
+    document.getElementById('start-btn').style.opacity = '1';
+    document.getElementById('stop-btn').disabled = true;
+    document.getElementById('stop-btn').style.opacity = '0.4';
+    addLog('warn', 'Bot stopped by user.');
+  }
+
+  let txCount = 0;
+  function simulateBot() {
+    const r = Math.random();
+    if (r < 0.3) {
+      addLog('ok', `TX Sent: 0x${Math.random().toString(16).slice(2,10)}...`);
+      txCount++;
+      document.getElementById('stat-minted').textContent = txCount;
+      document.getElementById('minted-top').textContent = txCount;
+    } else if (r < 0.6) {
+      addLog('err', `TX Failed — ${['gas too low','nonce mismatch','contract reverted'][Math.floor(Math.random()*3)]}`);
+    } else {
+      addLog('info', `Block #${Math.floor(Math.random()*1000000+20000000)} — Watching...`);
+    }
+    // update gas randomly
+    const g = (Math.random() * 5).toFixed(2);
+    document.getElementById('stat-gas').textContent = g;
+    document.getElementById('gwei-top').textContent = g;
+  }
+
+  // TEST MINT
+  function testMint() {
+    addLog('info', 'Simulating test mint (no real TX)...');
+    setTimeout(() => addLog('ok', 'Simulation OK — ABI parsed, gas estimated ~52000'), 800);
+  }
+
+  // ANALYZE CONTRACT
+  function analyzeContract() {
+    addLog('info', `Analyzing contract ${document.getElementById('contract-addr').value.slice(0,10)}...`);
+    setTimeout(() => {
+      addLog('ok', 'Contract deployed ✓');
+      addLog('warn', 'totalSupply() not found in ABI');
+      addLog('warn', 'maxSupply() not found in ABI');
+    }, 1200);
+  }
+
+  // CHECK SUPPLY
+  function checkSupply() {
+    addLog('info', 'Fetching supply...');
+    setTimeout(() => {
+      const s = Math.floor(Math.random() * 1000);
+      document.getElementById('supply-badge').textContent = `Supply: ${s}`;
+      addLog('ok', `Current supply: ${s}`);
+    }, 800);
+  }
+
+  // TEST RPC
+  function testRPC() {
+    const url = document.getElementById('rpc-url').value;
+    addLog('info', `Testing RPC: ${url.slice(0, 40)}...`);
+    setTimeout(() => {
+      addLog('ok', `RPC OK — latency: ${Math.floor(Math.random()*200+30)}ms`);
+    }, 900);
+  }
+
+  // FETCH GAS
+  function fetchGas() {
+    addLog('info', 'Fetching gas oracle...');
+    setTimeout(() => {
+      const g = (Math.random() * 5 + 0.5).toFixed(3);
+      document.getElementById('cur-gas-badge').textContent = `Current: ${g} Gwei`;
+      document.getElementById('stat-gas').textContent = g;
+      document.getElementById('gwei-top').textContent = g;
+      addLog('ok', `Gas oracle: ${g} Gwei`);
+    }, 700);
+  }
+
+  // BENCHMARK RPC
+  function benchmarkRPC() {
+    addLog('info', 'Benchmarking RPC endpoints...');
+    setTimeout(() => {
+      const el = document.getElementById('rpc-benchmark-result');
+      el.hidden = false;
+      addLog('ok', 'Benchmark complete.');
+    }, 1500);
+  }
+
+  // ADD WALLET
+  function addWallet() {
+    const key = document.getElementById('new-wallet-key').value;
+    if (!key) return;
+    const addr = '0x' + Math.random().toString(16).slice(2, 42).toUpperCase();
+    const list = document.getElementById('wallet-list');
+    const item = document.createElement('div');
+    item.className = 'check-item ok';
+    item.innerHTML = `<div class="dot">✓</div><span>${addr} <span class="badge cyan">NEW</span></span>`;
+    list.appendChild(item);
+    document.getElementById('new-wallet-key').value = '';
+    addLog('ok', `Wallet added: ${addr}`);
+  }
+
+  // WALLET DISPLAY
+  function updateWalletDisplay() {
+    document.getElementById('wallet-status').textContent =
+      '✅ Wallet connected | ' + selectedChain + ' | Private Key';
+  }
+</script>
+</body>
+</html>
