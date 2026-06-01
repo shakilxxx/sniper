@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tanvir Bot UI Clone</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #131b3f 0, #050712 40%, #02030a 80%);
+      color: #f4f7ff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: 1200px;
+      max-width: 100%;
+      background: linear-gradient(145deg, #050712 0, #050816 40%, #02030a 100%);
+      border-radius: 16px;
+      border: 1px solid rgba(115, 130, 255, 0.3);
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+    }
+
+    /* Top bar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      background: linear-gradient(90deg, #061528, #040814, #061528);
+      border-bottom: 1px solid rgba(120, 150, 255, 0.35);
+      font-size: 13px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #c6ddff;
+    }
+
+    .logo-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 9px;
+      background: radial-gradient(circle at 30% 20%, #ff6a80, #f52b4b 40%, #5216ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .top-center {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      color: #7e8ac7;
+    }
+
+    .tag {
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(120, 150, 255, 0.4);
+      background: rgba(13, 25, 61, 0.9);
+    }
+
+    .top-right {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      color: #8ea2ff;
+    }
+
+    .pill {
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: rgba(16, 204, 118, 0.08);
+      border: 1px solid rgba(16, 204, 118, 0.7);
+      color: #4de19b;
+      font-size: 11px;
+    }
+
+    /* Sub nav */
+    .subnav {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      gap: 20px;
+      background: linear-gradient(90deg, #050712, #040612);
+      border-bottom: 1px solid rgba(60, 75, 130, 0.7);
+      font-size: 12px;
+    }
+
+    .chain-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #111931;
+      border: 1px solid #ff4f5e;
+      color: #ff909a;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 22px;
+      margin-left: 30px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 11px;
+    }
+    .nav-tab {
+      cursor: pointer;
+      color: #7f88c9;
+      position: relative;
+      padding-bottom: 6px;
+    }
+    .nav-tab.active {
+      color: #fff;
+      font-weight: 600;
+    }
+    .nav-tab.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #ff6c86, #feca57, #4dd0ff);
+    }
+
+    .sub-metrics {
+      margin-left: auto;
+      display: flex;
+      gap: 20px;
+      font-size: 11px;
+      color: #7e8ac7;
+    }
+    .metric-label {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 2px;
+    }
+    .metric-value {
+      color: #f6f7ff;
+      font-weight: 500;
+    }
+
+    /* Content */
+    .content {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .cards-row {
+      display: flex;
+      gap: 14px;
+    }
+    .stat-card {
+      flex: 1;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: radial-gradient(circle at top, #101735, #050713);
+      border: 1px solid rgba(80, 95, 170, 0.85);
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.6);
+      font-size: 11px;
+      color: #868fdd;
+    }
+    .stat-label {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 6px;
+    }
+    .stat-value {
+      font-size: 20px;
+      color: #f6f7ff;
+      font-weight: 600;
+    }
+
+    /* Section */
+    .section {
+      margin-top: 6px;
+      padding: 16px 18px 20px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top left, #0c1633, #050713 40%, #02030b);
+      border: 1px solid rgba(68, 86, 166, 0.8);
+      box-shadow: 0 0 26px rgba(0, 0, 0, 0.75);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      font-size: 12px;
+      color: #96a3ff;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title span.lock {
+      color: #ffcc66;
+    }
+
+    /* Chain buttons */
+    .chain-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .chip {
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(90, 104, 190, 0.8);
+      background: rgba(7, 10, 29, 0.95);
+      color: #d4dcff;
+      cursor: pointer;
+    }
+    .chip.active {
+      border-color: #ff4f5e;
+      box-shadow: 0 0 18px rgba(255, 79, 94, 0.6);
+      background: radial-gradient(circle at top, #ff6b88, #3b163b 55%, #090812);
+    }
+    .chip-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #ff4f5e;
+      box-shadow: 0 0 8px rgba(255, 118, 140, 0.9);
+    }
+
+    /* Inputs */
+    .field-label {
+      font-size: 11px;
+      color: #7f8acd;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+    .input {
+      width: 100%;
+      background: #050813;
+      border-radius: 10px;
+      border: 1px solid rgba(78, 93, 170, 0.9);
+      padding: 9px 11px;
+      color: #e6ebff;
+      font-size: 12px;
+      outline: none;
+      caret-color: #4dd0ff;
+    }
+    .input:focus {
+      border-color: #4dd0ff;
+      box-shadow: 0 0 12px rgba(77, 208, 255, 0.7);
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .row > div {
+      flex: 1;
+    }
+
+    /* Buttons */
+    .btn-row {
+      margin-top: 14px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid transparent;
+      background: #0e1327;
+      color: #cdd5ff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn.primary {
+      background: linear-gradient(135deg, #24e0a9, #11b086);
+      color: #021016;
+      font-weight: 600;
+      box-shadow: 0 0 18px rgba(17, 176, 134, 0.8);
+    }
+    .btn.secondary {
+      border-color: rgba(80, 96, 190, 0.9);
+      background: rgba(6, 10, 32, 0.95);
+    }
+
+    /* Footer log */
+    .log {
+      margin-top: 16px;
+      font-size: 11px;
+      background: #050813;
+      border-radius: 10px;
+      border: 1px solid rgba(68, 84, 162, 0.9);
+      padding: 10px 12px;
+      color: #a5b0ff;
+    }
+    .log-line-ok {
+      color: #40e69c;
+    }
+    .log-line-warn {
+      color: #ff9b57;
+    }
+
+    @media (max-width: 900px) {
+      .subnav {
+        flex-wrap: wrap;
+      }
+      .nav-tabs {
+        margin-left: 0;
+        flex-wrap: wrap;
+      }
+      .sub-metrics {
+        margin-left: 0;
+      }
+      .cards-row {
+        flex-direction: column;
+      }
+      .row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Top bar -->
+    <div class="topbar">
+      <div class="logo">
+        <div class="logo-icon">🎯</div>
+        <div>
+          TANVIR BOT
+        </div>
+      </div>
+
+      <div class="top-center">
+        <span class="tag">NFT Sniper</span>
+        <span class="tag">All EVM Chains</span>
+        <span class="tag">v5.0 • Production</span>
+      </div>
+
+      <div class="top-right">
+        <div>0xF…E9C1</div>
+        <div class="pill">CONNECTED</div>
+      </div>
+    </div>
+
+    <!-- Sub navigation -->
+    <div class="subnav">
+      <div class="chain-pill">
+        <span>BASE</span>
+        <span>0.0 Gwei</span>
+      </div>
+
+      <div class="nav-tabs">
+        <div class="nav-tab active">Bot</div>
+        <div class="nav-tab">Wallets</div>
+        <div class="nav-tab">RPC</div>
+        <div class="nav-tab">Gas</div>
+        <div class="nav-tab">Monitor</div>
+        <div class="nav-tab">Log</div>
+      </div>
+
+      <div class="sub-metrics">
+        <div>
+          <div class="metric-label">Idle</div>
+          <div class="metric-value">Yes</div>
+        </div>
+        <div>
+          <div class="metric-label">Tasks</div>
+          <div class="metric-value">3</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div class="content">
+      <!-- Top stat cards -->
+      <div class="cards-row">
+        <div class="stat-card">
+          <div class="stat-label">Minted</div>
+          <div class="stat-value">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Failed</div>
+          <div class="stat-value" style="color:#ff6b88;">3</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Gas (Gwei)</div>
+          <div class="stat-value">0.0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Balance</div>
+          <div class="stat-value">0.0000</div>
+        </div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">
+            <span class="lock">🔒</span>
+            <span>Step 1 — Chain & Wallet</span>
+          </div>
+        </div>
+
+        <div class="field-label">EVM L1</div>
+        <div class="chain-grid">
+          <div class="chip"><span class="chip-dot" style="background:#ffffff;"></span>ETH</div>
+          <div class="chip"><span class="chip-dot" style="background:#f3ba2f;"></span>BSC</div>
+          <div class="chip"><span class="chip-dot" style="background:#8247e5;"></span>POLYGON</div>
+          <div class="chip"><span class="chip-dot" style="background:#e84142;"></span>AVAX</div>
+          <div class="chip"><span class="chip-dot" style="background:#15b5ff;"></span>FTM</div>
+        </div>
+
+        <div class="field-label" style="margin-top:10px;">L2 Rollups</div>
+        <div class="chain-grid">
+          <div class="chip active">
+            <span class="chip-dot"></span>BASE
+          </div>
+          <div class="chip">ARBITRUM</div>
+          <div class="chip">OPTIMISM</div>
+          <div class="chip">ZKSYNC</div>
+          <div class="chip">LINEA</div>
+          <div class="chip">SCROLL</div>
+        </div>
+
+        <div class="field-label">Alchemy / Infura RPC URL</div>
+        <input class="input" placeholder="https://base-mainnet.g.alchemy.com/v2/XXXXXXXXXXXX" />
+
+        <div class="field-label" style="margin-top:10px;">Private key</div>
+        <input class="input" type="password" value="..................................................................." />
+
+        <div class="log" style="margin-top:12px;">
+          <div class="log-line-warn">Use dedicated hot wallet only. Never your main wallet.</div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">
+            <span>📄</span>
+            <span>Step 2 — Contract</span>
+          </div>
+        </div>
+
+        <div class="field-label">Contract address</div>
+        <input class="input" value="0x0000...0000" />
+
+        <div class="field-label" style="margin-top:10px;">ABI fragment</div>
+        <textarea class="input" style="min-height:80px;">[{ "inputs": [], "name": "mint", "stateMutability": "nonpayable", "type": "function" }]</textarea>
+
+        <div class="row">
+          <div>
+            <div class="field-label">Mint price (ETH)</div>
+            <input class="input" value="0" />
+          </div>
+          <div>
+            <div class="field-label">Qty per tx</div>
+            <input class="input" value="1" />
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn secondary">Analyze</button>
+          <button class="btn primary">Supply</button>
+          <span style="font-size:11px;color:#7f8acd;">Supply: 12</span>
+        </div>
+
+        <div class="log">
+          <div class="log-line-ok">Contract deployed</div>
+          <div>totalSupply() — not available</div>
+          <div>maxSupply() — not available</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
