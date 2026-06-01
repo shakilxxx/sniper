@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Tanvir Bot · NFT Sniper v5.0</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 20% 30%, #0B0E17, #03050A);
+            font-family: 'Inter', monospace;
+            color: #EFF3FC;
+            padding: 1.5rem;
+            min-height: 100vh;
+        }
+
+        /* custom scroll */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #11161f;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2A3A55;
+            border-radius: 10px;
+        }
+
+        .glass-panel {
+            background: rgba(12, 18, 28, 0.7);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(72, 187, 255, 0.2);
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .neon-glow {
+            transition: all 0.2s ease;
+        }
+        .neon-glow:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 0 8px rgba(59,130,246,0.3);
+        }
+
+        .chain-btn {
+            background: #0F131C;
+            border: 1px solid #222a36;
+            border-radius: 40px;
+            padding: 0.4rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.15s;
+            cursor: pointer;
+            color: #bfd9ff;
+        }
+        .chain-btn.active {
+            background: #1E2A47;
+            border-color: #3b82f6;
+            color: white;
+            box-shadow: 0 0 6px #3b82f6;
+        }
+        .chain-btn:hover:not(.active) {
+            background: #1A1F2E;
+            border-color: #4b6e9e;
+        }
+
+        .stat-card {
+            background: #0A0F17;
+            border-radius: 20px;
+            padding: 0.7rem 1rem;
+            border-bottom: 1px solid #1E2A3A;
+        }
+
+        input, textarea, select {
+            background: #0A0F17;
+            border: 1px solid #253040;
+            border-radius: 16px;
+            padding: 12px 16px;
+            color: #eef4ff;
+            font-size: 0.85rem;
+            font-family: 'Inter', monospace;
+            transition: 0.2s;
+            width: 100%;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+        }
+
+        button.primary-action {
+            background: linear-gradient(95deg, #0F212E, #0B1A26);
+            border: 1px solid #2D4A6E;
+            border-radius: 40px;
+            padding: 10px 24px;
+            font-weight: 700;
+            color: #c1e2ff;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        button.primary-action:hover {
+            background: #1B3A55;
+            border-color: #5c9eff;
+            color: white;
+            transform: scale(0.98);
+            box-shadow: 0 0 12px rgba(59,130,246,0.3);
+        }
+
+        .badge-net {
+            background: #102231;
+            border-radius: 40px;
+            padding: 0.25rem 0.9rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.8rem;
+        }
+
+        @media (max-width: 1000px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            body {
+                padding: 1rem;
+            }
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 30px;
+            color: #9aaec9;
+            transition: 0.1s;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .tab-btn.active-tab {
+            background: #111c2a;
+            color: white;
+            box-shadow: inset 0 1px 0 #2c4058, 0 2px 6px black;
+        }
+
+        hr {
+            border-color: #1f2a3a;
+            margin: 0.5rem 0;
+        }
+        .supply-info {
+            background: #050A10;
+            border-radius: 18px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 0.8rem;
+        }
+        .warning-note {
+            font-size: 0.7rem;
+            color: #f97316;
+            background: #2c1c0e30;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="max-w-[1400px] mx-auto">
+    <!-- HEADER Section -->
+    <div class="glass-panel p-5 mb-5">
+        <div class="flex flex-wrap justify-between items-start gap-3">
+            <div>
+                <h1 class="text-3xl font-black tracking-tighter bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">TANVIR BOT</h1>
+                <div class="text-xs text-blue-300/70 mt-1 tracking-wide flex gap-2 flex-wrap">NFT SNIPER · ALL EVM CHAINS · V5.0 · PRODUCTION <i class="fas fa-bolt text-yellow-400 text-xs"></i></div>
+            </div>
+            <div class="flex gap-2 text-xs font-mono bg-black/40 p-2 rounded-full">
+                <span class="badge-net"><i class="fas fa-globe"></i> <span id="activeNetworkLabel">BASE</span></span>
+                <span class="badge-net"><i class="fas fa-tachometer-alt"></i> <span id="gasGweiDisplay">0.0</span> Gwei</span>
+                <span class="badge-net"><i class="fas fa-coins"></i> <span id="balanceDisplay">0.0000</span></span>
+                <span class="badge-net">IDLE</span>
+                <span class="badge-net">0</span>
+                <span class="badge-net">X3</span>
+                <span class="badge-net">- ms</span>
+            </div>
+        </div>
+
+        <!-- TABS: BOT, WALLETS, RPC, GAS, MONITOR, LOG -->
+        <div class="flex flex-wrap gap-1 mt-5 border-b border-gray-800 pb-2">
+            <button class="tab-btn active-tab" data-tab="bot">🤖 BOT</button>
+            <button class="tab-btn" data-tab="wallets">👛 WALLETS</button>
+            <button class="tab-btn" data-tab="rpc">⚡ RPC</button>
+            <button class="tab-btn" data-tab="gas">⛽ GAS</button>
+            <button class="tab-btn" data-tab="monitor">📡 MONITOR</button>
+            <button class="tab-btn" data-tab="log">📋 LOG</button>
+        </div>
+
+        <!-- STATS ROW: minted, failed, gas gwei, balance -->
+        <div class="grid grid-cols-4 gap-3 mt-5">
+            <div class="stat-card text-center"><div class="text-2xl font-bold" id="mintedCountDisplay">0</div><div class="text-xs text-gray-400">MINTED</div></div>
+            <div class="stat-card text-center"><div class="text-2xl font-bold" id="failedCountDisplay">3</div><div class="text-xs text-gray-400">FAILED</div></div>
+            <div class="stat-card text-center"><div class="text-2xl font-bold" id="gasGweiStat">0.0</div><div class="text-xs text-gray-400">GAS GWEI</div></div>
+            <div class="stat-card text-center"><div class="text-2xl font-bold" id="balanceStat">0.0000</div><div class="text-xs text-gray-400">BALANCE</div></div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD (Step1 + Step2) -->
+    <div class="dashboard-grid">
+        <!-- LEFT SIDE - STEP 1: CHAIN & WALLET -->
+        <div class="glass-panel p-5">
+            <div class="flex justify-between items-center mb-4"><h2 class="font-bold text-lg"><i class="fas fa-link mr-2 text-blue-400"></i> STEP 1 - CHAIN & WALLET</h2><span class="text-[11px] text-gray-500">EVM READY</span></div>
+            
+            <!-- EVM L1 chains -->
+            <div class="mb-4"><div class="text-xs uppercase font-bold text-gray-400 mb-2">EVM L1</div><div class="flex flex-wrap gap-2" id="l1Chains"></div></div>
+            <!-- L2 ROLLUPS -->
+            <div class="mb-4"><div class="text-xs uppercase font-bold text-gray-400 mb-2">L2 ROLLUPS</div><div class="flex flex-wrap gap-2" id="l2Chains"></div></div>
+            <!-- MORE CHAINS -->
+            <div class="mb-6"><div class="text-xs uppercase font-bold text-gray-400 mb-2">MORE CHAINS</div><div class="flex flex-wrap gap-2" id="moreChains"></div></div>
+            
+            <!-- RPC URL & PRIVATE KEY -->
+            <div class="mt-2 space-y-4">
+                <div>
+                    <label class="text-xs text-gray-300 block mb-1"><i class="fas fa-network-wired"></i> ALCHEMY/INFURA RPC URL (CORS-SAFE)</label>
+                    <input type="text" id="rpcUrl" value="https://base-mainnet.g.alchemy.com/v2/BNPpjAPpQMojMaorwUGIH" placeholder="https://your-rpc-url" class="w-full">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-300 block mb-1"><i class="fas fa-key"></i> PRIVATE KEY (REQUIRES CORS-SAFE RPC)</label>
+                    <input type="password" id="privateKey" placeholder="0xabcd... (demo only)" class="w-full" value="0xDEMO_PRIVATE_KEY_DO_NOT_USE_REAL">
+                    <div class="warning-note mt-2 text-amber-400/90"><i class="fas fa-shield-alt mr-1"></i> USE DEDICATED HOT WALLET ONLY. NEVER YOUR MAIN WALLET.</div>
+                </div>
+                <div class="bg-black/30 rounded-2xl p-3 mt-2 border border-white/5">
+                    <div class="flex justify-between text-xs"><span>💼 ACTIVE WALLET (demo)</span><span class="text-green-400">BASE</span></div>
+                    <div class="font-mono text-sm break-all">0xFa7F72B3f9e1dD51C903FB4C7d42fd1C433BB2A7</div>
+                    <div class="text-[11px] text-gray-400 mt-1">🔑 derived from hot wallet (simulated)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE - STEP 2: CONTRACT & MINT -->
+        <div class="glass-panel p-5">
+            <h2 class="font-bold text-lg mb-4"><i class="fas fa-file-contract mr-2 text-purple-400"></i> STEP 2 - CONTRACT</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-gray-300">CONTRACT ADDRESS</label>
+                    <input type="text" id="contractAddress" value="0x99bba4ddf1e5cd4dcdacd3b162e1ea2ba98908ec" class="font-mono">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-300">ABI FRAGMENT (MINT FUNCTION)</label>
+                    <textarea rows="3" id="abiFragment" class="font-mono text-xs">[{inputs:[{internalType:"address","name":"minter","type":"address"},{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"mints","stateMutability":"nonpayable","type":"function"}]</textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><label class="text-xs text-gray-300">MINT PRICE (ETH)</label><input type="text" id="mintPrice" value="0" readonly class="bg-gray-800/40"></div>
+                    <div><label class="text-xs text-gray-300">QTY PER TX</label><input type="number" id="qtyPerTx" value="1" min="1" max="99" class="bg-black/60"></div>
+                </div>
+                
+                <!-- ANALYZE BUTTON + RESULT -->
+                <div class="flex gap-3 items-center flex-wrap">
+                    <button id="analyzeBtn" class="primary-action"><i class="fas fa-chart-line mr-1"></i> ANALYZE</button>
+                    <button id="resetDemoBtn" class="text-xs bg-gray-800/50 px-4 py-2 rounded-full hover:bg-gray-700"><i class="fas fa-undo-alt"></i> Reset stats</button>
+                </div>
+                <div id="analysisResult" class="supply-info text-sm space-y-1">
+                    <div><i class="fas fa-database text-cyan-400"></i> <strong>Supply:</strong> <span id="supplyValue">12</span></div>
+                    <div><i class="fas fa-chart-simple"></i> totalSupply() - <span class="text-orange-300">not available</span></div>
+                    <div><i class="fas fa-chart-line"></i> maxSupply() - <span class="text-orange-300">not available</span></div>
+                    <div class="text-[11px] text-blue-300/70 mt-1">✅ Contract deployed | mock simulation ready</div>
+                </div>
+                
+                <!-- MINT / SNIPE ACTION -->
+                <button id="mintSnipeBtn" class="w-full mt-3 bg-gradient-to-r from-blue-900/80 to-indigo-900/80 border border-blue-500/50 rounded-2xl py-3 font-bold text-lg tracking-wide transition-all hover:scale-[1.01]"><i class="fas fa-bolt mr-2"></i> SNIPE / MINT (SIMULATION)</button>
+                <div class="text-center text-[10px] text-gray-500 mt-2">⚡ demo mode · no real tx · updates minted/failed dynamically</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Additional LOG area (optional log panel) -->
+    <div class="glass-panel mt-6 p-3 text-xs font-mono">
+        <div class="flex items-center gap-2"><i class="fas fa-terminal text-green-400"></i> <span class="font-bold">BOT LOG [v5.0]</span> <span class="text-gray-500 ml-auto">Ready · RPC connected (sim)</span></div>
+        <div id="logMessages" class="h-20 overflow-y-auto mt-2 text-gray-300 space-y-1 pl-1">
+            <div>🟢 Interface loaded · Tanvir Bot Production</div>
+            <div>📦 Supply detected: 12 · mint price 0 ETH</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- MOCK STATE ----------
+    let state = {
+        mintedTokens: 0,       // total minted tokens amount
+        failedTxs: 3,          // starting failed: 3 as per original ui
+        currentSupply: 12,     // remaining supply
+        balanceEth: 0.0000,
+        gasPriceGwei: 0.0,
+        selectedChain: "BASE",
+        chainSelectorMap: {}
+    };
+    
+    // DOM elements references
+    const mintedDisplay = document.getElementById('mintedCountDisplay');
+    const failedDisplay = document.getElementById('failedCountDisplay');
+    const supplySpan = document.getElementById('supplyValue');
+    const gasGweiStatSpan = document.getElementById('gasGweiStat');
+    const balanceStatSpan = document.getElementById('balanceStat');
+    const activeNetworkSpan = document.getElementById('activeNetworkLabel');
+    const gasGweiTopSpan = document.getElementById('gasGweiDisplay');
+    const balanceTopSpan = document.getElementById('balanceDisplay');
+    const logContainer = document.getElementById('logMessages');
+
+    function addLog(msg, isError = false) {
+        const div = document.createElement('div');
+        div.className = `text-xs ${isError ? 'text-red-400' : 'text-emerald-300/80'}`;
+        div.innerHTML = isError ? `⚠️ ${msg}` : `🔹 ${msg}`;
+        logContainer.appendChild(div);
+        div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        if(logContainer.children.length > 12) logContainer.removeChild(logContainer.children[0]);
+    }
+
+    function updateUI() {
+        mintedDisplay.innerText = state.mintedTokens;
+        failedDisplay.innerText = state.failedTxs;
+        supplySpan.innerText = state.currentSupply;
+        gasGweiStatSpan.innerText = state.gasPriceGwei.toFixed(1);
+        balanceStatSpan.innerText = state.balanceEth.toFixed(4);
+        gasGweiTopSpan.innerText = state.gasPriceGwei.toFixed(1);
+        balanceTopSpan.innerText = state.balanceEth.toFixed(4);
+        activeNetworkSpan.innerText = state.selectedChain;
+        // simulate small gwei changes? not needed
+    }
+
+    // Chain definitions
+    const l1ChainsList = ["ETH", "BSC", "POLYGON", "AVAX", "FTM"];
+    const l2ChainsList = ["BASE", "ARBITRUM", "OPTIMISM", "ZKSYNC", "LINEA", "SCROLL"];
+    const moreChainsList = ["APEACHAIN", "POLYGON-ZK", "CELO", "MOONBEAM", "MANTA"];
+
+    function renderChainButtons() {
+        const l1Div = document.getElementById('l1Chains');
+        const l2Div = document.getElementById('l2Chains');
+        const moreDiv = document.getElementById('moreChains');
+        
+        function makeBtn(chain, group) {
+            const btn = document.createElement('button');
+            btn.innerText = chain;
+            btn.classList.add('chain-btn');
+            if (chain === state.selectedChain) btn.classList.add('active');
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.chain-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.selectedChain = chain;
+                activeNetworkSpan.innerText = chain;
+                addLog(`Switched network to ${chain} (simulated RPC binding)`);
+                // optional: update rpc placeholder based on network? could but not required
+                const rpcField = document.getElementById('rpcUrl');
+                if(chain === "BASE") rpcField.value = "https://base-mainnet.g.alchemy.com/v2/BNPpjAPpQMojMaorwUGIH";
+                else if(chain === "ETH") rpcField.value = "https://eth-mainnet.g.alchemy.com/v2/demo";
+                else rpcField.value = `https://${chain.toLowerCase()}.rpc.demo`;
+            });
+            return btn;
+        }
+        l1Div.innerHTML = ''; l2Div.innerHTML = ''; moreDiv.innerHTML = '';
+        l1ChainsList.forEach(c => l1Div.appendChild(makeBtn(c, 'l1')));
+        l2ChainsList.forEach(c => l2Div.appendChild(makeBtn(c, 'l2')));
+        moreChainsList.forEach(c => moreDiv.appendChild(makeBtn(c, 'more')));
+    }
+
+    // ANALYZE function: mock on-chain data
+    function analyzeContract() {
+        const contractAddr = document.getElementById('contractAddress').value.trim();
+        if (!contractAddr) {
+            addLog("Contract address missing!", true);
+            return;
+        }
+        addLog(`Analyzing contract: ${contractAddr.slice(0,8)}...`);
+        // Mock supply = state.currentSupply, and display message regarding totalSupply not available
+        document.getElementById('supplyValue').innerText = state.currentSupply;
+        const analysisDiv = document.getElementById('analysisResult');
+        // preserve extra info
+        let extraHtml = `<div><i class="fas fa-database text-cyan-400"></i> <strong>Supply:</strong> ${state.currentSupply}</div>
+                         <div><i class="fas fa-chart-simple"></i> totalSupply() - <span class="text-orange-300">not available</span></div>
+                         <div><i class="fas fa-chart-line"></i> maxSupply() - <span class="text-orange-300">not available</span></div>`;
+        if(contractAddr.toLowerCase() === "0x99bba4ddf1e5cd4dcdacd3b162e1ea2ba98908ec") {
+            extraHtml += `<div class="text-green-400 text-[11px] mt-1">✓ Verified contract (demo) | Mintable: 0 ETH</div>`;
+        } else {
+            extraHtml += `<div class="text-yellow-400 text-[11px] mt-1">⚠️ Unverified ABI, simulation mode</div>`;
+        }
+        analysisDiv.innerHTML = extraHtml;
+        addLog(`Analysis complete: supply left = ${state.currentSupply} / max unknown`);
+    }
+
+    // MINT SIMULATION (snipe)
+    function executeMint() {
+        const qtyElem = document.getElementById('qtyPerTx');
+        let qty = parseInt(qtyElem.value);
+        if (isNaN(qty) || qty < 1) qty = 1;
+        const contractAddr = document.getElementById('contractAddress').value.trim();
+        if (!contractAddr) {
+            addLog("❌ Mint failed: No contract address provided!", true);
+            state.failedTxs += 1;
+            updateUI();
+            return;
+        }
+        
+        const privateKeyField = document.getElementById('privateKey').value;
+        if (!privateKeyField || privateKeyField.length < 10) {
+            addLog("⚠️ Missing or invalid private key (demo requirement - just for simulation)", true);
+            // still simulate fail but increment failed?
+            state.failedTxs += 1;
+            updateUI();
+            addLog("Invalid private key! Use dedicated hot wallet only.", true);
+            return;
+        }
+        
+        // Check supply
+        if (state.currentSupply < qty) {
+            addLog(`❌ Mint failed: insufficient supply! Required: ${qty}, left: ${state.currentSupply}`, true);
+            state.failedTxs += 1;
+            updateUI();
+            return;
+        }
+        
+        // mint price is 0, always success regarding price
+        // SUCCESS simulation
+        state.currentSupply -= qty;
+        state.mintedTokens += qty;
+        // gas gwei small random for demo flair
+        state.gasPriceGwei = (Math.random() * 0.8 + 0.2).toFixed(1);
+        state.gasPriceGwei = parseFloat(state.gasPriceGwei);
+        // balance remains same (free mint)
+        addLog(`✨ SUCCESSFUL SNIPE! Minted ${qty} NFT${qty>1?'s':''} | Gas: ${state.gasPriceGwei} Gwei | Remaining supply: ${state.currentSupply}`);
+        addLog(`💰 Transaction: 0 ETH paid, token transfer simulated.`);
+        
+        updateUI();
+        // update analysis supply display if analysis block present
+        const supplySpanInAnalysis = document.getElementById('supplyValue');
+        if(supplySpanInAnalysis) supplySpanInAnalysis.innerText = state.currentSupply;
+        // also refresh analysis block content but not full reset
+        let analysisDiv = document.getElementById('analysisResult');
+        if(analysisDiv && analysisDiv.innerHTML.includes('Supply:')) {
+            let newHtml = analysisDiv.innerHTML;
+            newHtml = newHtml.replace(/Supply:<\/strong> \d+/, `Supply:</strong> ${state.currentSupply}`);
+            analysisDiv.innerHTML = newHtml;
+        }
+        
+        // small balance fluctuation? not needed, mint price 0.
+        if(state.currentSupply === 0) addLog("🔥 SUPPLY EXHAUSTED! No more mints available.");
+    }
+
+    function resetDemoState() {
+        state.mintedTokens = 0;
+        state.failedTxs = 3;
+        state.currentSupply = 12;
+        state.gasPriceGwei = 0.0;
+        state.balanceEth = 0.0000;
+        updateUI();
+        document.getElementById('supplyValue').innerText = state.currentSupply;
+        const analysisDiv = document.getElementById('analysisResult');
+        analysisDiv.innerHTML = `<div><i class="fas fa-database text-cyan-400"></i> <strong>Supply:</strong> ${state.currentSupply}</div>
+                                 <div><i class="fas fa-chart-simple"></i> totalSupply() - <span class="text-orange-300">not available</span></div>
+                                 <div><i class="fas fa-chart-line"></i> maxSupply() - <span class="text-orange-300">not available</span></div>
+                                 <div class="text-[11px] text-blue-300/70 mt-1">✅ Reset to initial contract state</div>`;
+        addLog("🔄 Bot state reset: minted=0, failed=3, supply restored to 12");
+        // also reset input fields to default contract if needed
+        document.getElementById('contractAddress').value = "0x99bba4ddf1e5cd4dcdacd3b162e1ea2ba98908ec";
+        document.getElementById('qtyPerTx').value = "1";
+        document.getElementById('mintPrice').value = "0";
+    }
+
+    // TABS (demo UI toggling visual only but keep content consistent)
+    function initTabs() {
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                tabs.forEach(b => b.classList.remove('active-tab'));
+                btn.classList.add('active-tab');
+                const tabId = btn.getAttribute('data-tab');
+                addLog(`Switched to ${tabId.toUpperCase()} panel (UI demo, all controls visible)`);
+                // optional: not changing main content, just dashboard style
+            });
+        });
+    }
+    
+    // extra: manually sync gas from UI custom? maybe nothing else
+    window.addEventListener('DOMContentLoaded', () => {
+        renderChainButtons();
+        initTabs();
+        updateUI();
+        // set active chain button base as default
+        setTimeout(() => {
+            const baseBtn = Array.from(document.querySelectorAll('.chain-btn')).find(b => b.innerText === 'BASE');
+            if(baseBtn) baseBtn.click();
+        }, 10);
+        
+        // attach events
+        document.getElementById('analyzeBtn').addEventListener('click', analyzeContract);
+        document.getElementById('mintSnipeBtn').addEventListener('click', executeMint);
+        document.getElementById('resetDemoBtn').addEventListener('click', resetDemoState);
+        
+        // initial analyze
+        analyzeContract();
+        
+        // RPC url warning listener not needed but for log
+        const rpcField = document.getElementById('rpcUrl');
+        rpcField.addEventListener('change', () => addLog(`RPC endpoint changed to ${rpcField.value.substring(0, 40)}...`));
+        addLog("✅ Tanvir Bot v5.0 ready | Simulation Mode | All chains selectable");
+    });
+</script>
+</body>
+</html>
