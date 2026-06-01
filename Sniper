@@ -1,0 +1,275 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Multi-wallet OpenSea FCFS minting bot. Pre-sign, spin-wait, broadcast at exact time." />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta property="og:title" content="OpenSea WL" />
+    <meta property="og:description" content="Multi-wallet OpenSea FCFS minting bot — pre-sign, WSS broadcast, microsecond timing." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230a0a0a'/%3E%3Ctext x='32' y='44' font-family='monospace' font-size='40' font-weight='700' text-anchor='middle' fill='%234ade80'%3EW%3C/text%3E%3C/svg%3E" />
+    <title>OpenSea WL</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <h1>OpenSea WL <span>&mdash; Beta</span></h1>
+        <span id="statusText" class="status-pill">Idle</span>
+      </div>
+
+      <!-- Network (shared) -->
+      <!-- OpenSea API Keys -->
+      <div class="card">
+        <div class="card-title">OpenSea Keys</div>
+        <div class="row" style="grid-template-columns:1fr 1fr 1fr auto; gap:0.5rem; align-items:flex-end;">
+          <input type="text" id="osKey1" placeholder="Key 1" />
+          <input type="text" id="osKey2" placeholder="Key 2" />
+          <input type="text" id="osKey3" placeholder="Key 3" />
+          <button class="btn-fetch" id="fetchKeysBtn" style="align-self:flex-end;white-space:nowrap;">Fetch Keys</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Network</span>
+          <button class="btn-eye" id="customRpcBtn">Set Custom</button>
+        </div>
+
+        <!-- Default: chainlist.txt dropdown -->
+        <div id="chainRow">
+          <label>Chain <select id="chainSelect"></select></label>
+        </div>
+
+        <!-- Custom RPC mode -->
+        <div id="customRpcRow" style="display:none">
+          <div class="row" style="grid-template-columns: 2fr 3fr">
+            <label>
+              Chain
+              <select id="customChainPreset">
+                <option value="1" data-rpc="https://ethereum.publicnode.com" data-wss-rpc="wss://ethereum.publicnode.com" data-explorer="https://etherscan.io/tx/">Ethereum</option>
+                <option value="8453" data-rpc="https://base-rpc.publicnode.com" data-wss-rpc="wss://base-rpc.publicnode.com" data-explorer="https://basescan.org/tx/">Base</option>
+              </select>
+            </label>
+            <label>
+              RPC URL
+              <input type="text" id="customRpcUrl" placeholder="https://… or wss://…" />
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Module card: inner HTML is injected by the active module on tab switch -->
+      <div class="card" id="moduleCard">
+        <div style="color: var(--text-dim); font-size: 0.8rem">Loading…</div>
+      </div>
+
+      <!-- Gas Settings (shared) -->
+      <div class="card">
+        <div class="card-title">Gas Settings</div>
+        <div class="row">
+          <label>
+            Gas Limit
+            <input type="number" id="gasLimit" value="250000" min="21000" />
+          </label>
+          <div class="input-btn-row">
+            <label>
+              Base Fee (gwei)
+              <input
+                type="number"
+                id="baseFee"
+                placeholder="auto via Gas"
+                step="0.0001"
+              />
+            </label>
+            <button class="btn-fetch" id="fetchGasBtn" title="Read current gas price from the RPC (may take 1–3s)">Gas</button>
+          </div>
+        </div>
+        <div class="row">
+          <label>
+            Priority Fee (gwei)
+            <input
+              type="number"
+              id="maxPriorityFee"
+              value="0.001"
+              step="0.0001"
+            />
+          </label>
+          <label>
+            Max Fee (gwei)
+            <input
+              type="number"
+              id="maxFee"
+              placeholder="base + priority"
+              step="0.0001"
+              readonly
+            />
+          </label>
+        </div>
+        <div class="calc-section">
+          <div class="calc-header">
+            Max Fee Calculator <span>(Use If Needed)</span>
+            <button id="calcToggleBtn">Show</button>
+          </div>
+          <div class="calc-row" id="calcRow" style="display: none">
+            <label class="calc-field">
+              Gas Limit
+              <input type="number" id="calcGasLimit" placeholder="gas limit" />
+            </label>
+            <span class="calc-sep">×</span>
+            <label class="calc-field">
+              Max Fee (gwei)
+              <input
+                type="number"
+                id="calcGwei"
+                placeholder="gwei"
+                step="0.0001"
+              />
+            </label>
+            <span class="calc-sep">=</span>
+            <label class="calc-field">
+              Cost (ETH)
+              <input
+                type="number"
+                id="calcEth"
+                placeholder="0.00000000"
+                step="0.00000001"
+              />
+            </label>
+            <span class="calc-sep">=</span>
+            <label class="calc-field">
+              Cost (USDT)
+              <input
+                type="number"
+                id="calcUsdt"
+                placeholder="0.0000"
+                step="0.0001"
+              />
+            </label>
+            <button class="btn-fetch calc-fetch-btn" id="calcFetchBtn">
+              Fetch Price
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wallets (shared) -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Wallets <span style="font-size:0.7rem;color:var(--text-dim)">(max 5)</span></span>
+          <div style="display: flex; gap: 0.5rem; align-items: center">
+            <span
+              id="walletCount"
+              style="font-size: 0.7rem; color: var(--text-dim)"
+              >0 wallets loaded</span
+            >
+            <button class="btn-eye" id="walletsExampleBtn">Example</button>
+            <button class="btn-eye" id="walletsToggleBtn">
+              <span id="eyeLabel">Hide</span>
+            </button>
+          </div>
+        </div>
+        <label
+          style="
+            flex-direction: row;
+            align-items: baseline;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+          "
+        >
+          One per line — <code>,0xAddress,,0xPrivateKey</code> [NO SPACE]
+        </label>
+        <div class="wallet-wrap">
+          <textarea
+            id="wallets"
+            rows="5"
+            placeholder=",0xYour1stAddress,,0xYour1stAddressPrivateKey&#10;,0xYour2ndAddress,,0xYour2ndAddressPrivateKey&#10;,0xYour3rdAddress,,0xYour3rdAddressPrivateKey"
+          ></textarea>
+        </div>
+        <div class="wallet-btn-group">
+          <button class="btn-eye" id="walletsSaveBtn">Get Nonce</button>
+          <button class="btn-eye" id="walletsClearBtn">Clear</button>
+        </div>
+      </div>
+
+      <!-- Execution (shared) -->
+      <div class="card">
+        <div class="card-title">Execution</div>
+        <label>
+          <select id="execMode">
+            <option value="instant">Instant</option>
+            <option value="schedule" selected>Schedule (Local Time)</option>
+          </select>
+        </label>
+        <div class="schedule-row" id="scheduleRow">
+          <label
+            >Hour (24h)<input
+              type="number"
+              id="schedHour"
+              value="0"
+              min="0"
+              max="23"
+          /></label>
+          <label
+            >Minute<input
+              type="number"
+              id="schedMin"
+              value="0"
+              min="0"
+              max="59"
+          /></label>
+          <label
+            >Second<input
+              type="number"
+              id="schedSec"
+              value="0"
+              min="0"
+              max="59"
+          /></label>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="mintBtn">Mint</button>
+          <button class="btn btn-stop" id="stopBtn" style="display: none">
+            Stop
+          </button>
+          <span id="countdown"></span>
+        </div>
+      </div>
+
+      <!-- Log (shared) -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Log</span>
+          <button class="btn-clear" id="clearLogBtn">Clear</button>
+        </div>
+        <div id="log" role="log" aria-live="polite" aria-atomic="false"></div>
+      </div>
+    </div>
+
+    <!-- Toast container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Web3.js — used by core.js for gas fetch, chain read ops -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.10.4/web3.min.js"></script>
+    <!-- ethers.js v6 — used by opensea module for signing + WSS broadcast -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.umd.min.js"></script>
+
+    <!-- Shared module utilities (MME.*) — must load before platform modules -->
+    <script src="js/shared.js"></script>
+
+    <!-- OpenSea FCFS module -->
+    <script src="js/modules/opensea.js"></script>
+
+    <!-- Vercel Analytics -->
+    <script defer="defer" src="/_vercel/insights/script.js"></script>
+
+    <!-- Core app: tab system, shared events, execution orchestration -->
+    <script src="js/core.js"></script>
+
+    <!-- Nonce Grab -->
+    <script src="js/nonce-grab.js"></script>
+  </body>
+</html>
