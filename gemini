@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanvir Bot - Interface Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            background-color: #060b13;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .custom-card {
+            background-color: #0b1320;
+            border: 1px solid #162235;
+        }
+        .input-field {
+            background-color: #050911;
+            border: 1px solid #1a2c47;
+            color: #ffffff;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #00bcd4;
+        }
+    </style>
+</head>
+<body class="text-gray-300 p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        
+        <header class="flex justify-between items-center mb-6 border-b border-gray-800 pb-4">
+            <div>
+                <h1 class="text-cyan-400 text-2xl font-bold tracking-wider flex items-center gap-2">
+                    <span class="bg-red-500 text-white rounded-full p-1 text-xs"><i class="fa-solid fa-crosshairs"></i></span> 
+                    TANVIR BOT
+                </h1>
+                <p class="text-xs text-gray-500 tracking-widest mt-1">NFT SNIPER · ALL EVM CHAINS · v5.0 · PRODUCTION</p>
+            </div>
+            <div class="flex items-center gap-2 text-xs bg-emerald-950/50 text-emerald-400 px-3 py-1.5 rounded-md border border-emerald-800">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block animate-pulse"></span> 0xFfa...
+            </div>
+        </header>
+
+        <div class="flex flex-wrap gap-4 text-xs font-semibold mb-6 text-gray-400 bg-[#090f1a] p-3 rounded-md border border-gray-800">
+            <div class="flex items-center gap-1 text-cyan-400"><i class="fa-solid fa-layer-group"></i> BASE</div>
+            <div class="flex items-center gap-1"><i class="fa-solid fa-gas-pump text-pink-500"></i> 0.0 Gwei</div>
+            <div class="flex items-center gap-1"><i class="fa-solid fa-coins text-yellow-500"></i> 0.0000</div>
+            <div class="flex items-center gap-1"><i class="fa-solid fa-toggle-on text-cyan-400"></i> IDLE</div>
+            <div class="flex items-center gap-1 text-emerald-400"><i class="fa-solid fa-check"></i> 0</div>
+            <div class="flex items-center gap-1 text-red-500"><i class="fa-solid fa-xmark"></i> 3</div>
+            <div class="flex items-center gap-1"><i class="fa-solid fa-gauge-high"></i> - ms</div>
+        </div>
+
+        <div class="flex gap-2 border-b border-gray-800 mb-6 text-sm overflow-x-auto">
+            <button class="border-b-2 border-cyan-400 text-cyan-400 px-4 py-2 font-semibold flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-robot"></i> BOT</button>
+            <button class="text-gray-500 hover:text-gray-300 px-4 py-2 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-wallet text-pink-400"></i> WALLETS</button>
+            <button class="text-gray-500 hover:text-gray-300 px-4 py-2 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-circle-nodes text-blue-400"></i> RPC</button>
+            <button class="text-gray-500 hover:text-gray-300 px-4 py-2 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-gas-pump text-red-400"></i> GAS</button>
+            <button class="text-gray-500 hover:text-gray-300 px-4 py-2 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-chart-line text-emerald-400"></i> MONITOR</button>
+            <button class="text-gray-500 hover:text-gray-300 px-4 py-2 flex items-center gap-2 whitespace-nowrap"><i class="fa-solid fa-file-lines text-amber-400"></i> LOG</button>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="custom-card p-4 rounded-md text-center border-t-2 border-t-cyan-500">
+                <div class="text-xl font-bold text-cyan-400">0</div>
+                <div class="text-[10px] uppercase text-gray-500 tracking-wider mt-1">Minted</div>
+            </div>
+            <div class="custom-card p-4 rounded-md text-center border-t-2 border-t-pink-500">
+                <div class="text-xl font-bold text-pink-500">3</div>
+                <div class="text-[10px] uppercase text-gray-500 tracking-wider mt-1">Failed</div>
+            </div>
+            <div class="custom-card p-4 rounded-md text-center border-t-2 border-t-yellow-500">
+                <div class="text-xl font-bold text-yellow-500">0.0</div>
+                <div class="text-[10px] uppercase text-gray-500 tracking-wider mt-1">Gas Gwei</div>
+            </div>
+            <div class="custom-card p-4 rounded-md text-center border-t-2 border-t-emerald-500">
+                <div class="text-xl font-bold text-emerald-400">0.0000</div>
+                <div class="text-[10px] uppercase text-gray-500 tracking-wider mt-1">Balance</div>
+            </div>
+        </div>
+
+        <div class="custom-card p-6 rounded-lg mb-6 shadow-xl">
+            <h2 class="text-cyan-400 font-bold text-sm tracking-wider mb-4 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-lock"></i> STEP 1 — Chain & Wallet
+            </h2>
+
+            <div class="mb-4">
+                <span class="text-[11px] text-gray-500 block mb-2 uppercase font-semibold"><i class="fa-solid fa-bolt text-yellow-500"></i> EVM L1</span>
+                <div class="flex flex-wrap gap-2">
+                    <button class="bg-[#121f35] hover:bg-slate-800 text-xs px-3 py-1.5 rounded text-gray-300 flex items-center gap-1.5 border border-gray-800"><span class="w-2 h-2 rounded-full bg-blue-500"></span> ETH</button>
+                    <button class="bg-[#121f35] hover:bg-slate-800 text-xs px-3 py-1.5 rounded text-gray-300 flex items-center gap-1.5 border border-gray-800"><span class="w-2 h-2 rounded-full bg-yellow-500"></span> BSC</button>
+                    <button class="bg-[#121f35] hover:bg-slate-800 text-xs px-3 py-1.5 rounded text-gray-300 flex items-center gap-1.5 border border-gray-800"><span class="w-2 h-2 rounded-full bg-purple-500"></span> POLYGON</button>
+                    <button class="bg-[#121f35] hover:bg-slate-800 text-xs px-3 py-1.5 rounded text-gray-300 flex items-center gap-1.5 border border-gray-800"><span class="w-2 h-2 rounded-full bg-red-500"></span> AVAX</button>
+                    <button class="bg-[#121f35] hover:bg-slate-800 text-xs px-3 py-1.5 rounded text-gray-300 flex items-center gap-1.5 border border-gray-800">👻 FTM</button>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <span class="text-[11px] text-gray-500 block mb-2 uppercase font-semibold"><i class="fa-solid fa-circle text-blue-500 text-[8px]"></i> L2 Rollups</span>
+                <div class="flex flex-wrap gap-2">
+                    <button class="bg-cyan-950/60 border border-cyan-500 text-xs px-4 py-1.5 rounded text-cyan-400 font-bold flex items-center gap-1.5"><span class="bg-red-500 text-white text-[9px] px-1 rounded font-bold">B</span> BASE</button>
+                    <button class="bg-[#121f35] hover:bg-slate-800 text-xs px-3 py-1.5 rounded text-gray-300 flex items-center gap-1.5 border border-gray-800"><span class="w-2 h-2 rounded-full bg-blue-400"></span> ARBITRUM</button>
+                    <button class="bg-[#121f35] hover:bg-slate-800 text-xs px-3 py-1.5 rounded text-gray-300 flex items-center gap-1.5 border border-gray-800"><span class="w-2 h-2 rounded-full bg-red-600"></span> OPTIMISM</button>
+                    <button class="bg-[#121f35] hover:bg-slate-800 text-xs px-3 py-1.5 rounded text-gray-300 flex items-center gap-1.5 border border-gray-800"><span class="w-2 h-2 rounded-full bg-cyan-600"></span> ZKSYNC</button>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="text-[10px] text-gray-500 block mb-1.5 uppercase font-semibold tracking-wider">Alchemy/Infura RPC URL (CORS-SAFE)</label>
+                <div class="flex gap-2">
+                    <input type="text" value="https://base-mainnet.g.alchemy.com/v2/BNPpjAPpQMojMaorwUGIH..." class="input-field w-full px-3 py-2 rounded text-xs font-mono">
+                    <button class="bg-cyan-500 hover:bg-cyan-600 text-black font-bold px-4 rounded text-xs transition">Connect</button>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="text-[10px] text-gray-500 block mb-1.5 uppercase font-semibold tracking-wider">Private Key (Requires CORS-SAFE RPC Above)</label>
+                <input type="password" value="************************************************" class="input-field w-full px-3 py-2 rounded text-xs font-mono tracking-widest">
+            </div>
+
+            <div class="bg-red-950/30 border border-red-900/50 text-red-400 p-2.5 rounded text-xs flex items-center gap-2 mb-4">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>Use dedicated hot wallet only. Never your main wallet.</span>
+            </div>
+
+            <div class="bg-emerald-950/40 border border-emerald-900/60 text-emerald-400 p-2.5 rounded text-xs font-mono flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-square-check"></i>
+                    <span>0xFa7F72B3f9e1dD51C903FB4C7d42fd1C433BB2A7</span>
+                </div>
+                <div class="text-gray-500">| BASE | Private Key</div>
+            </div>
+        </div>
+
+        <div class="custom-card p-6 rounded-lg shadow-xl">
+            <h2 class="text-cyan-400 font-bold text-sm tracking-wider mb-4 uppercase flex items-center gap-2">
+                <i class="fa-solid fa-file-code"></i> STEP 2 — Contract
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                <div class="md:col-span-3">
+                    <label class="text-[10px] text-gray-500 block mb-1.5 uppercase font-semibold tracking-wider">Contract Address</label>
+                    <input type="text" value="0x99bba4ddf1e5cd4dcdacd3b162e1ea2ba98908ec" class="input-field w-full px-3 py-2 rounded text-xs font-mono">
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 block mb-1.5 uppercase font-semibold tracking-wider">Mint Function Name</label>
+                    <input type="text" value="mint" class="input-field w-full px-3 py-2 rounded text-xs text-center font-semibold">
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="text-[10px] text-gray-500 block mb-1.5 uppercase font-semibold tracking-wider">ABI Fragment (See ABI Guide Tab — Usually just one line)</label>
+                <textarea rows="2" class="input-field w-full px-3 py-2 rounded text-xs font-mono resize-none">[{"inputs":[{"internalType":"address","name":"minter","type":"address"},{"internalType":"uint256","name":"quantity","type":"uint256"}],"name":"mint"}]</textarea>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <label class="text-[10px] text-gray-500 block mb-1.5 uppercase font-semibold tracking-wider">Mint Price (ETH)</label>
+                    <input type="number" value="0" class="input-field w-full px-3 py-2 rounded text-xs">
+                </div>
+                <div>
+                    <label class="text-[10px] text-gray-500 block mb-1.5 uppercase font-semibold tracking-wider">Qty Per TX</label>
+                    <input type="number" value="1" class="input-field w-full px-3 py-2 rounded text-xs">
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between border-b border-gray-800 pb-4 mb-4">
+                <div class="flex gap-2">
+                    <button class="bg-[#121f35] border border-cyan-500/30 hover:border-cyan-500 text-cyan-400 font-bold px-4 py-1.5 rounded text-xs uppercase flex items-center gap-1.5"><i class="fa-solid fa-magnifying-glass text-[10px]"></i> Analyze</button>
+                    <button class="bg-[#121f35] border border-purple-500/30 hover:border-purple-500 text-purple-400 font-bold px-4 py-1.5 rounded text-xs uppercase flex items-center gap-1.5"><i class="fa-solid fa-boxes-stacked text-[10px]"></i> Supply</button>
+                </div>
+                <div class="text-xs text-blue-400 font-semibold">Supply: 12</div>
+            </div>
+
+            <div class="space-y-2 text-xs font-mono text-gray-400">
+                <div class="flex items-center gap-2 text-emerald-400">
+                    <i class="fa-solid fa-square-check"></i> <span>Contract deployed</span>
+                </div>
+                <div class="flex items-center gap-2 text-gray-600">
+                    <i class="fa-regular fa-square"></i> <span>totalSupply() — not available</span>
+                </div>
+                <div class="flex items-center gap-2 text-gray-600">
+                    <i class="fa-regular fa-square"></i> <span>maxSupply() — not available</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
